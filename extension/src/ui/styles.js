@@ -124,19 +124,21 @@ const WIDGET_STYLES = `
 `;
 
 const MODAL_STYLES = `
-  .mutual-follows-modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.8);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10000;
-    font-family: "Roobert", "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    animation: fadeIn 0.2s ease;
+  .twitch-mutual-follows-modal-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background-color: rgba(0, 0, 0, 0.8) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 10000 !important;
+    font-family: "Roobert", "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+    animation: fadeIn 0.2s ease !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
   @keyframes fadeIn {

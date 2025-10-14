@@ -6,6 +6,9 @@ class MutualFollowsModal {
     this.data = null;
     this.onRefreshCallback = null;
     this.onCloseCallback = null;
+    this.scrollPosition = 0;
+    this.originalBodyOverflow = '';
+    this.originalHtmlOverflow = '';
   }
 
   show(data, targetLogin) {
@@ -24,9 +27,9 @@ class MutualFollowsModal {
     // Create modal content
     const modal = document.createElement('div');
     modal.className = 'modal-content';
-    
+
     const { allItems, total, isPartial } = data;
-    const partialText = isPartial ? ' (показана часть)' : '';
+    const partialText = '';
 
     modal.innerHTML = `
       <div class="modal-header">
@@ -47,11 +50,20 @@ class MutualFollowsModal {
     // Add event listeners
     this.attachEventListeners();
 
-    // Add to page
-    document.body.appendChild(this.overlay);
+    // Save current scroll position and overflow styles
+    this.scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+    this.originalBodyOverflow = document.body.style.overflow;
+    this.originalHtmlOverflow = document.documentElement.style.overflow;
 
     // Prevent body scroll
+    document.documentElement.style.overflow = 'hidden';
     document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${this.scrollPosition}px`;
+    document.body.style.width = '100%';
+
+    // Add to page
+    document.body.appendChild(this.overlay);
   }
 
   renderChannelList(channels) {
@@ -60,15 +72,15 @@ class MutualFollowsModal {
     }
 
     const items = channels.map(channel => {
-      const avatarUrl = channel.profileImageURL || 
+      const avatarUrl = channel.profileImageURL ||
         'https://static-cdn.jtvnw.net/user-default-pictures-uv/cdd517fe-def4-11e9-948e-784f43822e80-profile_image-50x50.png';
-      
+
       return `
         <div class="channel-item">
           <img src="${avatarUrl}" alt="${channel.displayName}" class="channel-avatar">
           <div class="channel-info">
-            <a href="https://www.twitch.tv/${channel.login}" 
-               target="_blank" 
+            <a href="https://www.twitch.tv/${channel.login}"
+               target="_blank"
                class="channel-name"
                title="${channel.displayName}">
               ${channel.displayName}
@@ -137,8 +149,15 @@ class MutualFollowsModal {
       this.overlay.parentNode.removeChild(this.overlay);
     }
 
-    // Restore body scroll
-    document.body.style.overflow = '';
+    // Restore body scroll and position
+    document.documentElement.style.overflow = this.originalHtmlOverflow;
+    document.body.style.overflow = this.originalBodyOverflow;
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.width = '';
+
+    // Restore scroll position
+    window.scrollTo(0, this.scrollPosition);
 
     // Remove escape handler
     if (this.escapeHandler) {
