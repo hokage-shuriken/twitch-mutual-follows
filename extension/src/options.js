@@ -8,12 +8,15 @@ const $ = (id) => document.getElementById(id);
 
 async function loadSettings() {
   try {
-    const result = await ext.storage.get('twitch:myLogin');
+    const result = await ext.storage.get(['twitch:myLogin', 'twitch:cardType']);
     const myLogin = result['twitch:myLogin'];
+    const cardType = result['twitch:cardType'] || 'native';
     
     if (myLogin) {
       $('myLogin').value = myLogin;
     }
+    
+    $('cardType').value = cardType;
   } catch (error) {
     console.error('Error loading settings:', error);
   }
@@ -102,10 +105,27 @@ function showStatus(elementId, type, message) {
 }
 
 // ============================================================================
+// Save Card Type
+// ============================================================================
+
+async function saveCardType() {
+  const cardType = $('cardType').value;
+
+  try {
+    await ext.storage.set({ 'twitch:cardType': cardType });
+    showStatus('cardTypeStatus', 'success', 'Настройка сохранена! Перезагрузите страницу Twitch.');
+  } catch (error) {
+    console.error('Error saving card type:', error);
+    showStatus('cardTypeStatus', 'error', 'Ошибка сохранения настройки');
+  }
+}
+
+// ============================================================================
 // Event Listeners
 // ============================================================================
 
 $('saveLogin').addEventListener('click', saveLogin);
+$('saveCardType').addEventListener('click', saveCardType);
 $('clearCache').addEventListener('click', clearCache);
 
 // Allow Enter key in login input

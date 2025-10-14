@@ -207,14 +207,14 @@
       <h2 class="section-title">Ваш логин Twitch</h2>
       <div class="form-group">
         <label for="myLogin">Логин</label>
-        <input 
-          type="text" 
-          id="myLogin" 
+        <input
+          type="text"
+          id="myLogin"
           placeholder="например: yourname"
           autocomplete="off"
         >
         <p class="help-text">
-          Введите ваш логин Twitch для отображения общих подписок. 
+          Введите ваш логин Twitch для отображения общих подписок.
           Расширение попытается определить логин автоматически, но вы можете установить его вручную.
         </p>
       </div>
@@ -222,11 +222,28 @@
       <div id="saveStatus"></div>
     </div>
 
+    <!-- Card Type Selection -->
+    <div class="section">
+      <h2 class="section-title">Тип карточки пользователя</h2>
+      <div class="form-group">
+        <label for="cardType">Показывать общие подписки в карточке</label>
+        <select id="cardType" style="width: 100%; padding: 10px 12px; background-color: #0e0e10; border: 2px solid #2e2e33; border-radius: 6px; color: #efeff1; font-size: 14px;">
+          <option value="native">Нативная карточка Twitch</option>
+          <option value="7tv">7TV карточка(bugged)</option>
+        </select>
+        <p class="help-text">
+          Выберите, в какой карточке отображать общие подписки. Нативная карточка используется по умолчанию.
+        </p>
+      </div>
+      <button id="saveCardType" class="button button-primary">Сохранить</button>
+      <div id="cardTypeStatus"></div>
+    </div>
+
     <!-- Cache Section -->
     <div class="section">
       <h2 class="section-title">Управление кешем</h2>
       <p class="help-text" style="margin-bottom: 16px;">
-        Расширение кеширует списки подписок на 12 часов для ускорения работы. 
+        Расширение кеширует списки подписок на 12 часов для ускорения работы.
         Вы можете очистить кеш для обновления данных.
       </p>
       <button id="clearCache" class="button button-danger">Очистить весь кеш</button>

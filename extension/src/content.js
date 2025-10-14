@@ -8,6 +8,19 @@ const processedCards = new WeakSet();
 let currentWidget = null;
 let currentModal = null;
 
+// Card type preference
+let cardTypePreference = 'native'; // 'native' or '7tv'
+
+// Load card type preference
+async function loadCardTypePreference() {
+  try {
+    const result = await ext.storage.get('twitch:cardType');
+    cardTypePreference = result['twitch:cardType'] || 'native';
+  } catch (e) {
+    console.warn('[Content] Failed to load card type preference:', e);
+  }
+}
+
 // ============================================================================
 // Auto-detect current user's login
 // ============================================================================
@@ -56,22 +69,63 @@ function extractMyLoginFromDOM() {
 // ============================================================================
 
 function isUserCard(element) {
-  // Check if element has data-a-target="viewer-card" attribute
-  const isViewerCard = element.getAttribute('data-a-target') === 'viewer-card';
-  
-  if (!isViewerCard) {
-    return false;
-  }
+  // Check for native Twitch viewer card
+  if (cardTypePreference === 'native') {
+    const isViewerCard = element.getAttribute('data-a-target') === 'viewer-card';
+    
+    if (!isViewerCard) {
+      return false;
+    }
 
-  // Additional check: ensure it has profile links
-  const hasProfileLink = element.querySelector('a[href^="/"]');
+    // Additional check: ensure it has profile links
+    const hasProfileLink = element.querySelector('a[href^="/"]');
+    
+    return !!hasProfileLink;
+  }
   
-  return !!hasProfileLink;
+  // Check for 7TV user card
+  if (cardTypePreference === '7tv') {
+    const is7TVCard = element.classList.contains('seventv-user-card-header');
+    
+    if (!is7TVCard) {
+      return false;
+    }
+
+    // Additional check: ensure it has username link
+    const hasUserLink = element.querySelector('a[href*="twitch.tv/"]');
+    
+    return !!hasUserLink;
+  }
+  
+  return false;
 }
 
 function extractTargetLogin(cardElement) {
-  // Try to find user login from the card
+  // For 7TV cards
+  if (cardTypePreference === '7tv') {
+    // Extract from link href: https://twitch.tv/username
+    const userLink = cardElement.querySelector('a[href*="twitch.tv/"]');
+    if (userLink) {
+      const href = userLink.getAttribute('href');
+      const match = href.match(/twitch\.tv\/([a-zA-Z0-9_]+)/);
+      if (match) {
+        return match[1].toLowerCase();
+      }
+    }
+    
+    // Fallback: extract from username span
+    const usernameSpan = cardElement.querySelector('.seventv-chat-user-username span span');
+    if (usernameSpan) {
+      const username = usernameSpan.textContent.trim();
+      if (username) {
+        return username.toLowerCase();
+      }
+    }
+    
+    return null;
+  }
 
+  // For native Twitch cards
   // Method 1: Find profile link
   const profileLinks = cardElement.querySelectorAll('a[href^="/"]');
   for (const link of profileLinks) {
@@ -107,6 +161,24 @@ function extractTargetLogin(cardElement) {
 // ============================================================================
 
 function findInsertionPoint(cardElement) {
+  // For 7TV cards
+  if (cardTypePreference === '7tv') {
+    // cardElement is seventv-user-card-header, we need to find the parent card and insert after interactive section
+    // Navigate up to find the parent seventv-user-card
+    let parentCard = cardElement.parentElement;
+    if (parentCard && parentCard.classList.contains('seventv-user-card')) {
+      // Find the interactive section within parent card
+      const interactiveSection = parentCard.querySelector('.seventv-user-card-interactive');
+      if (interactiveSection) {
+        return interactiveSection;
+      }
+    }
+    
+    // Fallback: return parent card or the element itself
+    return parentCard || cardElement;
+  }
+
+  // For native Twitch cards
   // Find a good place to insert the widget
   // Try to insert at the bottom of the card, after the buttons section
 
@@ -261,9 +333,16 @@ function observeCards() {
           handleCardAppearance(node);
         }
 
-        // Check children for viewer cards
-        const cards = node.querySelectorAll ?
-          node.querySelectorAll('[data-a-target="viewer-card"]') : [];
+        // Check children for cards based on preference
+        let cards = [];
+        if (node.querySelectorAll) {
+          if (cardTypePreference === 'native') {
+            cards = node.querySelectorAll('[data-a-target="viewer-card"]');
+          } else if (cardTypePreference === '7tv') {
+            cards = node.querySelectorAll('.seventv-user-card-header');
+          }
+        }
+        
         for (const card of cards) {
           if (isUserCard(card)) {
             handleCardAppearance(card);
@@ -303,12 +382,15 @@ function handleCardAppearance(cardElement) {
 // Initialization
 // ============================================================================
 
-function init() {
+async function init() {
   // Wait for page to be ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
     return;
   }
+
+  // Load card type preference first
+  await loadCardTypePreference();
 
   // Detect my login on page load
   detectMyLogin().then(login => {
@@ -321,7 +403,13 @@ function init() {
   observeCards();
 
   // Also check for existing cards on page (in case script loads late)
-  const existingCards = document.querySelectorAll('[data-a-target="viewer-card"]');
+  let existingCards = [];
+  if (cardTypePreference === 'native') {
+    existingCards = document.querySelectorAll('[data-a-target="viewer-card"]');
+  } else if (cardTypePreference === '7tv') {
+    existingCards = document.querySelectorAll('.seventv-user-card-header');
+  }
+  
   for (const card of existingCards) {
     if (isUserCard(card) && !processedCards.has(card)) {
       handleCardAppearance(card);
