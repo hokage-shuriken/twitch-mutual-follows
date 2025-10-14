@@ -1,0 +1,34 @@
+{
+  "manifest_version": 2,
+  "name": "Twitch Mutual Follows",
+  "version": "1.0.1",
+  "description": "Показывает общие подписки между вашим аккаунтом и другими пользователями Twitch",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "https://gql.twitch.tv/*",
+    "https://www.twitch.tv/*"
+  ],
+  "background": {
+    "scripts": ["src/compat.js", "src/background.js"]
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.twitch.tv/*"],
+      "js": ["src/compat.js", "src/ui/styles.js", "src/ui/card-widget.js", "src/ui/modal.js", "src/content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "options_page": "src/options.html",
+  "icons": {
+    "16": "public/icons/icon16.png",
+    "48": "public/icons/icon48.png",
+    "128": "public/icons/icon128.png"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "twitch-mutual-follows@hokage.dev"
+    }
+  }
+}
+
