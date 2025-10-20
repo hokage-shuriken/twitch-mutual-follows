@@ -243,7 +243,7 @@ async function loadAndDisplayIntersection(targetLogin, widget, forceRefresh = fa
     // Ensure we have myLogin
     const myLogin = await detectMyLogin();
     if (!myLogin) {
-      widget.setError('Не найден ваш логин. Откройте настройки расширения.');
+      widget.setError(ext.i18n.getMessage('errorLoginNotFound'));
       return;
     }
 
@@ -256,7 +256,7 @@ async function loadAndDisplayIntersection(targetLogin, widget, forceRefresh = fa
 
     if (!response) {
       console.warn('[Content] Empty response for getIntersection');
-      widget.setError('Ошибка загрузки');
+      widget.setError(ext.i18n.getMessage('loadingError'));
       return;
     }
 
@@ -269,12 +269,12 @@ async function loadAndDisplayIntersection(targetLogin, widget, forceRefresh = fa
         widget.setSuccess({ top4, total, allItems, isPartial });
       }
     } else {
-      widget.setError(response.message || 'Ошибка загрузки');
+      widget.setError(response.message || ext.i18n.getMessage('loadingError'));
     }
 
   } catch (error) {
     console.error('[Content] Error loading intersection:', error);
-    widget.setError('Ошибка загрузки данных');
+    widget.setError(ext.i18n.getMessage('errorLoadingData'));
   }
 }
 

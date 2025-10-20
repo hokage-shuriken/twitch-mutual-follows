@@ -31,17 +31,21 @@ class MutualFollowsModal {
     const { allItems, total, isPartial } = data;
     const partialText = '';
 
+    const modalTitle = ext.i18n.getMessage('mutualWith', [targetLogin]) + ` (${total}${partialText})`;
+    const closeLabel = ext.i18n.getMessage('close');
+    const refreshLabel = ext.i18n.getMessage('refresh');
+
     modal.innerHTML = `
       <div class="modal-header">
-        <h3 class="modal-title">Общие с @${targetLogin} (${total}${partialText})</h3>
-        <button class="close-btn" aria-label="Закрыть">×</button>
+        <h3 class="modal-title">${modalTitle}</h3>
+        <button class="close-btn" aria-label="${closeLabel}">×</button>
       </div>
       <div class="modal-body">
         ${this.renderChannelList(allItems)}
       </div>
       <div class="modal-footer">
-        <button class="modal-btn modal-btn-secondary" data-action="refresh">Обновить</button>
-        <button class="modal-btn modal-btn-primary" data-action="close">Закрыть</button>
+        <button class="modal-btn modal-btn-secondary" data-action="refresh">${refreshLabel}</button>
+        <button class="modal-btn modal-btn-primary" data-action="close">${closeLabel}</button>
       </div>
     `;
 
@@ -68,7 +72,7 @@ class MutualFollowsModal {
 
   renderChannelList(channels) {
     if (!channels || channels.length === 0) {
-      return '<div class="empty-message">Нет общих подписок</div>';
+      return `<div class="empty-message">${ext.i18n.getMessage('noMutualFollows')}</div>`;
     }
 
     const items = channels.map(channel => {

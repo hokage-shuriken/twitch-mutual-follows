@@ -1,0 +1,181 @@
+{
+  "extensionName": {
+    "message": "Twitch Mutual Follows",
+    "description": "Extension name"
+  },
+  "extensionDescription": {
+    "message": "Shows mutual follows between your account and other Twitch users",
+    "description": "Extension description"
+  },
+  "settingsTitle": {
+    "message": "Extension Settings",
+    "description": "Settings page subtitle"
+  },
+  "yourTwitchLogin": {
+    "message": "Your Twitch Login",
+    "description": "Your Twitch login section title"
+  },
+  "login": {
+    "message": "Login",
+    "description": "Login label"
+  },
+  "loginPlaceholder": {
+    "message": "e.g.: yourname",
+    "description": "Login input placeholder"
+  },
+  "loginHelpText": {
+    "message": "Enter your Twitch login to display mutual follows. The extension will try to detect your login automatically, but you can set it manually.",
+    "description": "Login help text"
+  },
+  "save": {
+    "message": "Save",
+    "description": "Save button"
+  },
+  "cardTypeSection": {
+    "message": "User Card Type",
+    "description": "Card type section title"
+  },
+  "cardTypeLabel": {
+    "message": "Show mutual follows in card",
+    "description": "Card type selection label"
+  },
+  "cardTypeNative": {
+    "message": "Native Twitch Card",
+    "description": "Native Twitch card option"
+  },
+  "cardType7TV": {
+    "message": "7TV Card (bugged)",
+    "description": "7TV card option"
+  },
+  "cardTypeHelpText": {
+    "message": "Choose which card to display mutual follows in. Native card is used by default.",
+    "description": "Card type help text"
+  },
+  "cacheManagement": {
+    "message": "Cache Management",
+    "description": "Cache management section title"
+  },
+  "cacheHelpText": {
+    "message": "The extension caches follow lists for 12 hours to speed up performance. You can clear the cache to refresh data.",
+    "description": "Cache help text"
+  },
+  "clearAllCache": {
+    "message": "Clear All Cache",
+    "description": "Clear all cache button"
+  },
+  "clearing": {
+    "message": "Clearing...",
+    "description": "Clearing status"
+  },
+  "howToUseTitle": {
+    "message": "How to Use?",
+    "description": "How to use info box title"
+  },
+  "howToUseText": {
+    "message": "1. Open any chat on Twitch<br>2. Click on a username in chat<br>3. You'll see a \"Mutual Follows\" section in the card<br>4. Click on the avatars to see the full list",
+    "description": "How to use instructions"
+  },
+  "errorLoginRequired": {
+    "message": "Please enter your login",
+    "description": "Error: login required"
+  },
+  "errorLoginFormat": {
+    "message": "Login can only contain letters, numbers, and underscores",
+    "description": "Error: invalid login format"
+  },
+  "successLoginSaved": {
+    "message": "Login saved successfully!",
+    "description": "Success: login saved"
+  },
+  "errorSaving": {
+    "message": "Save error: $ERROR$",
+    "description": "Error saving",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "network error"
+      }
+    }
+  },
+  "errorSavingLogin": {
+    "message": "Error saving login",
+    "description": "Error saving login"
+  },
+  "successCacheCleared": {
+    "message": "Cache cleared! Entries removed: $COUNT$",
+    "description": "Success: cache cleared",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "errorClearingCache": {
+    "message": "Error clearing cache",
+    "description": "Error clearing cache"
+  },
+  "successCardTypeSaved": {
+    "message": "Setting saved! Reload the Twitch page.",
+    "description": "Success: card type saved"
+  },
+  "errorSavingCardType": {
+    "message": "Error saving setting",
+    "description": "Error saving card type"
+  },
+  "mutualFollows": {
+    "message": "Mutual Follows",
+    "description": "Mutual follows widget title"
+  },
+  "noMutualFollows": {
+    "message": "No mutual follows",
+    "description": "No mutual follows message"
+  },
+  "loadingError": {
+    "message": "Loading error",
+    "description": "Loading error message"
+  },
+  "retry": {
+    "message": "Retry",
+    "description": "Retry button"
+  },
+  "mutualWith": {
+    "message": "Mutual with @$USERNAME$",
+    "description": "Modal title with username",
+    "placeholders": {
+      "username": {
+        "content": "$1",
+        "example": "username"
+      }
+    }
+  },
+  "close": {
+    "message": "Close",
+    "description": "Close button"
+  },
+  "refresh": {
+    "message": "Refresh",
+    "description": "Refresh button"
+  },
+  "errorLoginNotFound": {
+    "message": "Your login not found. Open extension settings.",
+    "description": "Error: login not found (content script)"
+  },
+  "errorLoginNotFoundSettings": {
+    "message": "Your login not found. Set it in extension settings.",
+    "description": "Error: login not found (background)"
+  },
+  "errorLoadingData": {
+    "message": "Error loading data",
+    "description": "Error loading data"
+  },
+  "errorUserNotFound": {
+    "message": "User not found",
+    "description": "Error: user not found"
+  },
+  "errorRateLimit": {
+    "message": "Too many requests, try again later",
+    "description": "Error: rate limit exceeded"
+  }
+}
+

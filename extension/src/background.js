@@ -1,8 +1,8 @@
-// Background Service Worker для Twitch Mutual Follows Extension
+// Background Service Worker for Twitch Mutual Follows Extension
 
 const GQL_URL = 'https://gql.twitch.tv/gql';
 const CLIENT_ID = 'kd1unb4b3q4t58fwlpcbzcbnm76a8fp';
-const CACHE_TTL = 1000 * 60 * 60 * 12; // 12 часов
+const CACHE_TTL = 1000 * 60 * 60 * 12; // 12 hours
 const PAGE_LIMIT = 20;
 const PREVIEW_PAGE_LIMIT = 3;
 
@@ -225,7 +225,7 @@ async function handleGetIntersection(message, sendResponse) {
       sendResponse({
         success: false,
         error: 'no_login',
-        message: 'Не найден ваш логин. Установите его в настройках расширения.'
+        message: ext.i18n.getMessage('errorLoginNotFoundSettings')
       });
       return;
     }
@@ -271,14 +271,14 @@ async function handleGetIntersection(message, sendResponse) {
   } catch (error) {
     console.error('[Background] Error in getIntersection:', error);
     
-    let errorMessage = 'Ошибка загрузки';
+    let errorMessage = ext.i18n.getMessage('loadingError');
     let errorCode = 'source_error';
 
     if (error.message === 'user_not_found') {
-      errorMessage = 'Пользователь не найден';
+      errorMessage = ext.i18n.getMessage('errorUserNotFound');
       errorCode = 'user_not_found';
     } else if (error.message.includes('gql_http_429')) {
-      errorMessage = 'Слишком много запросов, попробуйте позже';
+      errorMessage = ext.i18n.getMessage('errorRateLimit');
       errorCode = 'rate_limit';
     }
 
@@ -299,7 +299,7 @@ async function handleGetIntersectionFull(message, sendResponse) {
     const myLogin = result['twitch:myLogin'];
 
     if (!myLogin) {
-      sendResponse({ success: false, error: 'no_login', message: 'Не найден ваш логин. Установите его в настройках расширения.' });
+      sendResponse({ success: false, error: 'no_login', message: ext.i18n.getMessage('errorLoginNotFoundSettings') });
       return;
     }
 
@@ -318,13 +318,13 @@ async function handleGetIntersectionFull(message, sendResponse) {
 
   } catch (error) {
     console.error('[Background] Error in getIntersectionFull:', error);
-    let errorMessage = 'Ошибка загрузки';
+    let errorMessage = ext.i18n.getMessage('loadingError');
     let errorCode = 'source_error';
     if (error.message === 'user_not_found') {
-      errorMessage = 'Пользователь не найден';
+      errorMessage = ext.i18n.getMessage('errorUserNotFound');
       errorCode = 'user_not_found';
     } else if (error.message.includes('gql_http_429')) {
-      errorMessage = 'Слишком много запросов, попробуйте позже';
+      errorMessage = ext.i18n.getMessage('errorRateLimit');
       errorCode = 'rate_limit';
     }
     sendResponse({ success: false, error: errorCode, message: errorMessage });

@@ -1,0 +1,181 @@
+{
+  "extensionName": {
+    "message": "Twitch Mutual Follows",
+    "description": "Extension name"
+  },
+  "extensionDescription": {
+    "message": "Показывает общие подписки между вашим аккаунтом и другими пользователями Twitch",
+    "description": "Extension description"
+  },
+  "settingsTitle": {
+    "message": "Настройки расширения",
+    "description": "Settings page subtitle"
+  },
+  "yourTwitchLogin": {
+    "message": "Ваш логин Twitch",
+    "description": "Your Twitch login section title"
+  },
+  "login": {
+    "message": "Логин",
+    "description": "Login label"
+  },
+  "loginPlaceholder": {
+    "message": "например: yourname",
+    "description": "Login input placeholder"
+  },
+  "loginHelpText": {
+    "message": "Введите ваш логин Twitch для отображения общих подписок. Расширение попытается определить логин автоматически, но вы можете установить его вручную.",
+    "description": "Login help text"
+  },
+  "save": {
+    "message": "Сохранить",
+    "description": "Save button"
+  },
+  "cardTypeSection": {
+    "message": "Тип карточки пользователя",
+    "description": "Card type section title"
+  },
+  "cardTypeLabel": {
+    "message": "Показывать общие подписки в карточке",
+    "description": "Card type selection label"
+  },
+  "cardTypeNative": {
+    "message": "Нативная карточка Twitch",
+    "description": "Native Twitch card option"
+  },
+  "cardType7TV": {
+    "message": "7TV карточка(bugged)",
+    "description": "7TV card option"
+  },
+  "cardTypeHelpText": {
+    "message": "Выберите, в какой карточке отображать общие подписки. Нативная карточка используется по умолчанию.",
+    "description": "Card type help text"
+  },
+  "cacheManagement": {
+    "message": "Управление кешем",
+    "description": "Cache management section title"
+  },
+  "cacheHelpText": {
+    "message": "Расширение кеширует списки подписок на 12 часов для ускорения работы. Вы можете очистить кеш для обновления данных.",
+    "description": "Cache help text"
+  },
+  "clearAllCache": {
+    "message": "Очистить весь кеш",
+    "description": "Clear all cache button"
+  },
+  "clearing": {
+    "message": "Очистка...",
+    "description": "Clearing status"
+  },
+  "howToUseTitle": {
+    "message": "Как использовать?",
+    "description": "How to use info box title"
+  },
+  "howToUseText": {
+    "message": "1. Откройте любой чат на Twitch<br>2. Кликните на ник пользователя в чате<br>3. В появившейся карточке увидите блок \"Общие фолловы\"<br>4. Кликните на аватарки, чтобы увидеть полный список",
+    "description": "How to use instructions"
+  },
+  "errorLoginRequired": {
+    "message": "Пожалуйста, введите ваш логин",
+    "description": "Error: login required"
+  },
+  "errorLoginFormat": {
+    "message": "Логин может содержать только буквы, цифры и подчёркивание",
+    "description": "Error: invalid login format"
+  },
+  "successLoginSaved": {
+    "message": "Логин сохранён успешно!",
+    "description": "Success: login saved"
+  },
+  "errorSaving": {
+    "message": "Ошибка сохранения: $ERROR$",
+    "description": "Error saving",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "network error"
+      }
+    }
+  },
+  "errorSavingLogin": {
+    "message": "Ошибка сохранения логина",
+    "description": "Error saving login"
+  },
+  "successCacheCleared": {
+    "message": "Кеш очищен! Удалено записей: $COUNT$",
+    "description": "Success: cache cleared",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "errorClearingCache": {
+    "message": "Ошибка очистки кеша",
+    "description": "Error clearing cache"
+  },
+  "successCardTypeSaved": {
+    "message": "Настройка сохранена! Перезагрузите страницу Twitch.",
+    "description": "Success: card type saved"
+  },
+  "errorSavingCardType": {
+    "message": "Ошибка сохранения настройки",
+    "description": "Error saving card type"
+  },
+  "mutualFollows": {
+    "message": "Общие фолловы",
+    "description": "Mutual follows widget title"
+  },
+  "noMutualFollows": {
+    "message": "Нет общих подписок",
+    "description": "No mutual follows message"
+  },
+  "loadingError": {
+    "message": "Ошибка загрузки",
+    "description": "Loading error message"
+  },
+  "retry": {
+    "message": "Повторить",
+    "description": "Retry button"
+  },
+  "mutualWith": {
+    "message": "Общие с @$USERNAME$",
+    "description": "Modal title with username",
+    "placeholders": {
+      "username": {
+        "content": "$1",
+        "example": "username"
+      }
+    }
+  },
+  "close": {
+    "message": "Закрыть",
+    "description": "Close button"
+  },
+  "refresh": {
+    "message": "Обновить",
+    "description": "Refresh button"
+  },
+  "errorLoginNotFound": {
+    "message": "Не найден ваш логин. Откройте настройки расширения.",
+    "description": "Error: login not found (content script)"
+  },
+  "errorLoginNotFoundSettings": {
+    "message": "Не найден ваш логин. Установите его в настройках расширения.",
+    "description": "Error: login not found (background)"
+  },
+  "errorLoadingData": {
+    "message": "Ошибка загрузки данных",
+    "description": "Error loading data"
+  },
+  "errorUserNotFound": {
+    "message": "Пользователь не найден",
+    "description": "Error: user not found"
+  },
+  "errorRateLimit": {
+    "message": "Слишком много запросов, попробуйте позже",
+    "description": "Error: rate limit exceeded"
+  }
+}
+

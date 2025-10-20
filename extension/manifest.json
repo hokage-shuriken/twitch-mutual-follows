@@ -1,8 +1,9 @@
 {
   "manifest_version": 2,
-  "name": "Twitch Mutual Follows",
+  "name": "__MSG_extensionName__",
   "version": "1.0.1",
-  "description": "Показывает общие подписки между вашим аккаунтом и другими пользователями Twitch",
+  "description": "__MSG_extensionDescription__",
+  "default_locale": "en",
   "permissions": [
     "storage",
     "activeTab",

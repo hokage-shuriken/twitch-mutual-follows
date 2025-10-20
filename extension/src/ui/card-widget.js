@@ -28,7 +28,7 @@ class MutualFollowsWidget {
     widget.className = 'mutual-follows-widget';
     widget.innerHTML = `
       <div class="widget-header">
-        <h4 class="widget-title">Общие фолловы</h4>
+        <h4 class="widget-title">${ext.i18n.getMessage('mutualFollows')}</h4>
       </div>
       <div class="widget-content"></div>
     `;
@@ -55,7 +55,7 @@ class MutualFollowsWidget {
 
   setError(message) {
     this.state = 'error';
-    this.errorMessage = message || 'Ошибка загрузки';
+    this.errorMessage = message || ext.i18n.getMessage('loadingError');
     this.render();
   }
 
@@ -83,7 +83,7 @@ class MutualFollowsWidget {
 
     if (this.state === 'empty') {
       content.innerHTML = `
-        <div class="empty-state">Нет общих подписок</div>
+        <div class="empty-state">${ext.i18n.getMessage('noMutualFollows')}</div>
       `;
       return;
     }
@@ -93,7 +93,7 @@ class MutualFollowsWidget {
         <div class="error-state">
           ${this.errorMessage}
           <br>
-          <button class="retry-btn">Повторить</button>
+          <button class="retry-btn">${ext.i18n.getMessage('retry')}</button>
         </div>
       `;
 

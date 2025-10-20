@@ -86,6 +86,16 @@
     return Promise.resolve(undefined);
   }
 
+  function i18nGetMessage(messageName, substitutions) {
+    if (globalBrowser && globalBrowser.i18n) {
+      return globalBrowser.i18n.getMessage(messageName, substitutions);
+    }
+    if (globalChrome && globalChrome.i18n) {
+      return globalChrome.i18n.getMessage(messageName, substitutions);
+    }
+    return messageName;
+  }
+
   const ext = {
     storage: {
       get: storageGet,
@@ -94,6 +104,9 @@
     },
     runtime: {
       sendMessage: runtimeSendMessage
+    },
+    i18n: {
+      getMessage: i18nGetMessage
     }
   };
 
