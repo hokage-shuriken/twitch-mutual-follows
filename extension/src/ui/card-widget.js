@@ -119,8 +119,8 @@ class MutualFollowsWidget {
 
       // Render avatars
       const avatarsHTML = top4.map(channel => `
-        <img 
-          src="${channel.profileImageURL || 'https://static-cdn.jtvnw.net/user-default-pictures-uv/cdd517fe-def4-11e9-948e-784f43822e80-profile_image-50x50.png'}" 
+        <img
+          src="${channel.profileImageURL || 'https://static-cdn.jtvnw.net/user-default-pictures-uv/cdd517fe-def4-11e9-948e-784f43822e80-profile_image-50x50.png'}"
           alt="${channel.displayName}"
           class="avatar"
           title="${channel.displayName}"
