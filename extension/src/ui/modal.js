@@ -70,6 +70,33 @@ class MutualFollowsModal {
     document.body.appendChild(this.overlay);
   }
 
+  /**
+   * Formats the follow date for display
+   * @param {string|null} followedAt - ISO date string from Twitch API
+   * @returns {string} Formatted date string or empty string if no date
+   */
+  formatFollowDate(followedAt) {
+    if (!followedAt) return '';
+
+    try {
+      const date = new Date(followedAt);
+      const now = new Date();
+      const locale = navigator.language || 'en-US';
+
+      const year = date.getFullYear();
+      const currentYear = now.getFullYear();
+
+      // Format date based on whether it's current year or not
+      const options = year === currentYear
+        ? { month: 'short', day: 'numeric' }
+        : { month: 'short', day: 'numeric', year: 'numeric' };
+
+      return date.toLocaleDateString(locale, options);
+    } catch (error) {
+      return '';
+    }
+  }
+
   renderChannelList(channels) {
     if (!channels || channels.length === 0) {
       return `<div class="empty-message">${ext.i18n.getMessage('noMutualFollows')}</div>`;
@@ -79,17 +106,22 @@ class MutualFollowsModal {
       const avatarUrl = channel.profileImageURL ||
         'https://static-cdn.jtvnw.net/user-default-pictures-uv/cdd517fe-def4-11e9-948e-784f43822e80-profile_image-50x50.png';
 
+      const followDateText = this.formatFollowDate(channel.followedAt);
+
       return `
         <div class="channel-item">
           <img src="${avatarUrl}" alt="${channel.displayName}" class="channel-avatar">
           <div class="channel-info">
-            <a href="https://www.twitch.tv/${channel.login}"
-               target="_blank"
-               class="channel-name"
-               title="${channel.displayName}">
-              ${channel.displayName}
-            </a>
-            <div class="channel-login">@${channel.login}</div>
+            <div class="channel-details">
+              <a href="https://www.twitch.tv/${channel.login}"
+                 target="_blank"
+                 class="channel-name"
+                 title="${channel.displayName}">
+                ${channel.displayName}
+              </a>
+              <div class="channel-login">@${channel.login}</div>
+            </div>
+            ${followDateText ? `<div class="channel-follow-date">${followDateText}</div>` : ''}
           </div>
         </div>
       `;

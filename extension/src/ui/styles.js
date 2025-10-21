@@ -241,6 +241,14 @@ const MODAL_STYLES = `
   .channel-info {
     flex: 1;
     min-width: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .channel-details {
+    flex: 1;
+    min-width: 0;
   }
 
   .channel-name {
@@ -262,6 +270,12 @@ const MODAL_STYLES = `
   .channel-login {
     font-size: 12px;
     color: #adadb8;
+  }
+
+  .channel-follow-date {
+    font-size: 11px;
+    color: #adadb8;
+    flex-shrink: 0;
   }
 
   .modal-footer {

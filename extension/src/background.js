@@ -34,16 +34,16 @@ async function getFromCache(login) {
   const key = `twitch:follows:${login.toLowerCase()}`;
   const result = await ext.storage.get(key);
   const cached = result[key];
-  
+
   if (!cached) return null;
-  
+
   const now = Date.now();
   if (now - cached.ts > CACHE_TTL) {
     // Expired
     await ext.storage.remove(key);
     return null;
   }
-  
+
   return cached;
 }
 
@@ -83,7 +83,7 @@ async function fetchFollows(login, pageLimit = PAGE_LIMIT, forceRefresh = false)
       return cached;
     }
   }
-  
+
   let cursor = null;
   let items = [];
   let totalCount = 0;
@@ -109,7 +109,7 @@ async function fetchFollows(login, pageLimit = PAGE_LIMIT, forceRefresh = false)
 
       const data = await res.json();
       const user = data?.data?.user;
-      
+
       if (!user) {
         throw new Error('user_not_found');
       }
@@ -133,7 +133,7 @@ async function fetchFollows(login, pageLimit = PAGE_LIMIT, forceRefresh = false)
       if (!follows?.pageInfo?.hasNextPage) {
         break;
       }
-      
+
       // Reached page limit but more pages available
       if (page === pageLimit && follows?.pageInfo?.hasNextPage) {
         isPartial = true;
@@ -163,13 +163,13 @@ async function fetchFollows(login, pageLimit = PAGE_LIMIT, forceRefresh = false)
 function findIntersection(follows1, follows2) {
   const set1 = new Set(follows1.items.map(x => x.login.toLowerCase()));
   const intersection = [];
-  
+
   for (const item of follows2.items) {
     if (set1.has(item.login.toLowerCase())) {
       intersection.push(item);
     }
   }
-  
+
   return intersection;
 }
 
@@ -270,7 +270,7 @@ async function handleGetIntersection(message, sendResponse) {
 
   } catch (error) {
     console.error('[Background] Error in getIntersection:', error);
-    
+
     let errorMessage = ext.i18n.getMessage('loadingError');
     let errorCode = 'source_error';
 
