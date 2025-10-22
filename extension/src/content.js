@@ -36,8 +36,8 @@ async function detectMyLogin() {
     console.warn('[Content] getMyLogin message failed:', e);
   }
 
-  // Try to detect from DOM
-  const detectedLogin = extractMyLoginFromDOM();
+  // Try to detect from window.cookies
+  const detectedLogin = extractMyLoginFromCookies();
   if (detectedLogin) {
     // Save to storage
     await ext.runtime.sendMessage({
@@ -51,14 +51,44 @@ async function detectMyLogin() {
   return null;
 }
 
-function extractMyLoginFromDOM() {
-  // Try to find user display name from dropdown menu
-  const displayNameElement = document.querySelector('[data-a-target="user-display-name"]');
-  if (displayNameElement) {
-    const displayName = displayNameElement.textContent.trim();
-    if (displayName) {
-      return displayName.toLowerCase();
+function extractMyLoginFromCookies() {
+  // Extract login from window.cookies.login via page context injection
+  // Content scripts run in isolated context and can't access page's window.cookies directly
+  try {
+    // Create a temporary bridge element to pass data between contexts
+    const bridgeId = 'twitch-mutual-follows-bridge-' + Date.now();
+    const bridgeElement = document.createElement('div');
+    bridgeElement.id = bridgeId;
+    bridgeElement.style.display = 'none';
+    document.body.appendChild(bridgeElement);
+
+    // Inject script into page context to read window.cookies
+    const script = document.createElement('script');
+    script.textContent = `
+      (function() {
+        try {
+          const el = document.getElementById('${bridgeId}');
+          if (el && window.cookies && window.cookies.login) {
+            el.setAttribute('data-login', window.cookies.login);
+          }
+        } catch (e) {
+          console.warn('[Twitch Mutual Follows] Failed to read window.cookies:', e);
+        }
+      })();
+    `;
+    document.documentElement.appendChild(script);
+    script.remove();
+
+    // Read result from bridge element
+    const login = bridgeElement.getAttribute('data-login');
+    bridgeElement.remove();
+
+    if (login && typeof login === 'string' && login.length > 0) {
+      console.log('[Content] Login detected from window.cookies:', login);
+      return login.toLowerCase();
     }
+  } catch (e) {
+    console.warn('[Content] Failed to extract login from cookies:', e);
   }
 
   return null;
@@ -72,31 +102,31 @@ function isUserCard(element) {
   // Check for native Twitch viewer card
   if (cardTypePreference === 'native') {
     const isViewerCard = element.getAttribute('data-a-target') === 'viewer-card';
-    
+
     if (!isViewerCard) {
       return false;
     }
 
     // Additional check: ensure it has profile links
     const hasProfileLink = element.querySelector('a[href^="/"]');
-    
+
     return !!hasProfileLink;
   }
-  
+
   // Check for 7TV user card
   if (cardTypePreference === '7tv') {
     const is7TVCard = element.classList.contains('seventv-user-card-header');
-    
+
     if (!is7TVCard) {
       return false;
     }
 
     // Additional check: ensure it has username link
     const hasUserLink = element.querySelector('a[href*="twitch.tv/"]');
-    
+
     return !!hasUserLink;
   }
-  
+
   return false;
 }
 
@@ -112,7 +142,7 @@ function extractTargetLogin(cardElement) {
         return match[1].toLowerCase();
       }
     }
-    
+
     // Fallback: extract from username span
     const usernameSpan = cardElement.querySelector('.seventv-chat-user-username span span');
     if (usernameSpan) {
@@ -121,7 +151,7 @@ function extractTargetLogin(cardElement) {
         return username.toLowerCase();
       }
     }
-    
+
     return null;
   }
 
@@ -173,7 +203,7 @@ function findInsertionPoint(cardElement) {
         return interactiveSection;
       }
     }
-    
+
     // Fallback: return parent card or the element itself
     return parentCard || cardElement;
   }
@@ -342,7 +372,7 @@ function observeCards() {
             cards = node.querySelectorAll('.seventv-user-card-header');
           }
         }
-        
+
         for (const card of cards) {
           if (isUserCard(card)) {
             handleCardAppearance(card);
@@ -409,7 +439,7 @@ async function init() {
   } else if (cardTypePreference === '7tv') {
     existingCards = document.querySelectorAll('.seventv-user-card-header');
   }
-  
+
   for (const card of existingCards) {
     if (isUserCard(card) && !processedCards.has(card)) {
       handleCardAppearance(card);
