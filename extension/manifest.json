@@ -1,26 +1,36 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "__MSG_extensionName__",
   "version": "1.0.1",
   "description": "__MSG_extensionDescription__",
   "default_locale": "en",
   "permissions": [
-    "storage",
-    "activeTab",
-    "https://gql.twitch.tv/*",
-    "https://www.twitch.tv/*"
+    "storage"
+  ],
+  "host_permissions": [
+    "https://gql.twitch.tv/*"
   ],
   "background": {
-    "scripts": ["src/compat.js", "src/background.js"]
+    "service_worker": "src/background.sw.js",
+    "type": "module"
   },
   "content_scripts": [
+    {
+      "matches": ["https://www.twitch.tv/*"],
+      "js": ["src/page-context.js"],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
     {
       "matches": ["https://www.twitch.tv/*"],
       "js": ["src/compat.js", "src/ui/styles.js", "src/ui/card-widget.js", "src/ui/modal.js", "src/content.js"],
       "run_at": "document_idle"
     }
   ],
-  "options_page": "src/options.html",
+  "options_ui": {
+    "page": "src/options.html",
+    "open_in_tab": true
+  },
   "icons": {
     "16": "public/icons/icon16.png",
     "48": "public/icons/icon48.png",

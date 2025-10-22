@@ -37,7 +37,7 @@ async function detectMyLogin() {
   }
 
   // Try to detect from window.cookies
-  const detectedLogin = extractMyLoginFromCookies();
+  const detectedLogin = await extractMyLoginFromCookies();
   if (detectedLogin) {
     // Save to storage
     await ext.runtime.sendMessage({
@@ -52,46 +52,33 @@ async function detectMyLogin() {
 }
 
 function extractMyLoginFromCookies() {
-  // Extract login from window.cookies.login via page context injection
-  // Content scripts run in isolated context and can't access page's window.cookies directly
-  try {
-    // Create a temporary bridge element to pass data between contexts
-    const bridgeId = 'twitch-mutual-follows-bridge-' + Date.now();
-    const bridgeElement = document.createElement('div');
-    bridgeElement.id = bridgeId;
-    bridgeElement.style.display = 'none';
-    document.body.appendChild(bridgeElement);
+  // Extract login from window.cookies via page context script
+  // Uses custom events to communicate between isolated and MAIN worlds
+  return new Promise((resolve) => {
+    const timeout = setTimeout(() => {
+      console.warn('[Content] Timeout waiting for login from page context');
+      resolve(null);
+    }, 2000);
 
-    // Inject script into page context to read window.cookies
-    const script = document.createElement('script');
-    script.textContent = `
-      (function() {
-        try {
-          const el = document.getElementById('${bridgeId}');
-          if (el && window.cookies && window.cookies.login) {
-            el.setAttribute('data-login', window.cookies.login);
-          }
-        } catch (e) {
-          console.warn('[Twitch Mutual Follows] Failed to read window.cookies:', e);
-        }
-      })();
-    `;
-    document.documentElement.appendChild(script);
-    script.remove();
+    // Listen for response from page context
+    const handler = (event) => {
+      clearTimeout(timeout);
+      window.removeEventListener('twitch-mutual-follows:login-response', handler);
+      
+      const login = event.detail?.login;
+      if (login && typeof login === 'string' && login.length > 0) {
+        console.log('[Content] Login detected from window.cookies:', login);
+        resolve(login.toLowerCase());
+      } else {
+        resolve(null);
+      }
+    };
 
-    // Read result from bridge element
-    const login = bridgeElement.getAttribute('data-login');
-    bridgeElement.remove();
+    window.addEventListener('twitch-mutual-follows:login-response', handler);
 
-    if (login && typeof login === 'string' && login.length > 0) {
-      console.log('[Content] Login detected from window.cookies:', login);
-      return login.toLowerCase();
-    }
-  } catch (e) {
-    console.warn('[Content] Failed to extract login from cookies:', e);
-  }
-
-  return null;
+    // Request login from page context
+    window.dispatchEvent(new CustomEvent('twitch-mutual-follows:get-login'));
+  });
 }
 
 // ============================================================================
