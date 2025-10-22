@@ -44,7 +44,7 @@
     "description": "Native Twitch card option"
   },
   "cardType7TV": {
-    "message": "7TV Card (bugged)",
+    "message": "7TV Card",
     "description": "7TV card option"
   },
   "cardTypeHelpText": {

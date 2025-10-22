@@ -198,7 +198,7 @@ function findInsertionPoint(cardElement) {
     let parentCard = cardElement.parentElement;
     if (parentCard && parentCard.classList.contains('seventv-user-card')) {
       // Find the interactive section within parent card
-      const interactiveSection = parentCard.querySelector('.seventv-user-card-interactive');
+      const interactiveSection = parentCard.querySelector('.seventv-user-card-data');
       if (interactiveSection) {
         return interactiveSection;
       }
@@ -246,7 +246,11 @@ async function injectWidget(cardElement, targetLogin, forceRefresh = false) {
   // Find insertion point and insert
   const insertionPoint = findInsertionPoint(cardElement);
   if (insertionPoint) {
-    insertionPoint.appendChild(widgetElement);
+    if (cardTypePreference === '7tv') {
+      insertionPoint.prepend(widgetElement);
+    } else {
+      insertionPoint.appendChild(widgetElement);
+    }
   } else {
     cardElement.appendChild(widgetElement);
   }
