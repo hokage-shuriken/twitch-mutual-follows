@@ -1,29 +1,22 @@
 # Twitch Mutual Follows
 
-Браузерное расширение для отображения общих подписок между пользователями Twitch.
+A browser extension for displaying mutual follows between Twitch users.
 
-## Установка
+## Installation
 
 **Chrome:**
 ```
 1. chrome://extensions/
 2. Developer mode → ON
-3. Load unpacked → выберите директорию extension/
+3. Load unpacked → select the extension/ directory
 ```
 
 **Firefox:**
 ```
 1. about:debugging#/runtime/this-firefox
-2. Load Temporary Add-on → выберите extension/manifest.json
+2. Load Temporary Add-on → select extension/manifest.json
 ```
 
-## Технологии
-
-- Manifest V2 (Chrome/Firefox)
-- Content Scripts + Background Script
-- Shadow DOM
-- Twitch GraphQL API
-
-## Лицензия
+## License
 
 Apache License, Version 2.0.
