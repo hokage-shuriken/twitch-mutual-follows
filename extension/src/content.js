@@ -36,8 +36,8 @@ async function detectMyLogin() {
     console.warn('[Content] getMyLogin message failed:', e);
   }
 
-  // Try to detect from DOM
-  const detectedLogin = extractMyLoginFromDOM();
+  // Try to detect from window.cookies
+  const detectedLogin = await extractMyLoginFromCookies();
   if (detectedLogin) {
     // Save to storage
     await ext.runtime.sendMessage({
@@ -51,17 +51,34 @@ async function detectMyLogin() {
   return null;
 }
 
-function extractMyLoginFromDOM() {
-  // Try to find user display name from dropdown menu
-  const displayNameElement = document.querySelector('[data-a-target="user-display-name"]');
-  if (displayNameElement) {
-    const displayName = displayNameElement.textContent.trim();
-    if (displayName) {
-      return displayName.toLowerCase();
-    }
-  }
+function extractMyLoginFromCookies() {
+  // Extract login from window.cookies via page context script
+  // Uses custom events to communicate between isolated and MAIN worlds
+  return new Promise((resolve) => {
+    const timeout = setTimeout(() => {
+      console.warn('[Content] Timeout waiting for login from page context');
+      resolve(null);
+    }, 2000);
 
-  return null;
+    // Listen for response from page context
+    const handler = (event) => {
+      clearTimeout(timeout);
+      window.removeEventListener('twitch-mutual-follows:login-response', handler);
+      
+      const login = event.detail?.login;
+      if (login && typeof login === 'string' && login.length > 0) {
+        console.log('[Content] Login detected from window.cookies:', login);
+        resolve(login.toLowerCase());
+      } else {
+        resolve(null);
+      }
+    };
+
+    window.addEventListener('twitch-mutual-follows:login-response', handler);
+
+    // Request login from page context
+    window.dispatchEvent(new CustomEvent('twitch-mutual-follows:get-login'));
+  });
 }
 
 // ============================================================================
@@ -72,31 +89,31 @@ function isUserCard(element) {
   // Check for native Twitch viewer card
   if (cardTypePreference === 'native') {
     const isViewerCard = element.getAttribute('data-a-target') === 'viewer-card';
-    
+
     if (!isViewerCard) {
       return false;
     }
 
     // Additional check: ensure it has profile links
     const hasProfileLink = element.querySelector('a[href^="/"]');
-    
+
     return !!hasProfileLink;
   }
-  
+
   // Check for 7TV user card
   if (cardTypePreference === '7tv') {
     const is7TVCard = element.classList.contains('seventv-user-card-header');
-    
+
     if (!is7TVCard) {
       return false;
     }
 
     // Additional check: ensure it has username link
     const hasUserLink = element.querySelector('a[href*="twitch.tv/"]');
-    
+
     return !!hasUserLink;
   }
-  
+
   return false;
 }
 
@@ -112,7 +129,7 @@ function extractTargetLogin(cardElement) {
         return match[1].toLowerCase();
       }
     }
-    
+
     // Fallback: extract from username span
     const usernameSpan = cardElement.querySelector('.seventv-chat-user-username span span');
     if (usernameSpan) {
@@ -121,7 +138,7 @@ function extractTargetLogin(cardElement) {
         return username.toLowerCase();
       }
     }
-    
+
     return null;
   }
 
@@ -168,12 +185,12 @@ function findInsertionPoint(cardElement) {
     let parentCard = cardElement.parentElement;
     if (parentCard && parentCard.classList.contains('seventv-user-card')) {
       // Find the interactive section within parent card
-      const interactiveSection = parentCard.querySelector('.seventv-user-card-interactive');
+      const interactiveSection = parentCard.querySelector('.seventv-user-card-data');
       if (interactiveSection) {
         return interactiveSection;
       }
     }
-    
+
     // Fallback: return parent card or the element itself
     return parentCard || cardElement;
   }
@@ -216,7 +233,11 @@ async function injectWidget(cardElement, targetLogin, forceRefresh = false) {
   // Find insertion point and insert
   const insertionPoint = findInsertionPoint(cardElement);
   if (insertionPoint) {
-    insertionPoint.appendChild(widgetElement);
+    if (cardTypePreference === '7tv') {
+      insertionPoint.prepend(widgetElement);
+    } else {
+      insertionPoint.appendChild(widgetElement);
+    }
   } else {
     cardElement.appendChild(widgetElement);
   }
@@ -243,7 +264,7 @@ async function loadAndDisplayIntersection(targetLogin, widget, forceRefresh = fa
     // Ensure we have myLogin
     const myLogin = await detectMyLogin();
     if (!myLogin) {
-      widget.setError('Не найден ваш логин. Откройте настройки расширения.');
+      widget.setError(ext.i18n.getMessage('errorLoginNotFound'));
       return;
     }
 
@@ -256,7 +277,7 @@ async function loadAndDisplayIntersection(targetLogin, widget, forceRefresh = fa
 
     if (!response) {
       console.warn('[Content] Empty response for getIntersection');
-      widget.setError('Ошибка загрузки');
+      widget.setError(ext.i18n.getMessage('loadingError'));
       return;
     }
 
@@ -269,12 +290,12 @@ async function loadAndDisplayIntersection(targetLogin, widget, forceRefresh = fa
         widget.setSuccess({ top4, total, allItems, isPartial });
       }
     } else {
-      widget.setError(response.message || 'Ошибка загрузки');
+      widget.setError(response.message || ext.i18n.getMessage('loadingError'));
     }
 
   } catch (error) {
     console.error('[Content] Error loading intersection:', error);
-    widget.setError('Ошибка загрузки данных');
+    widget.setError(ext.i18n.getMessage('errorLoadingData'));
   }
 }
 
@@ -342,7 +363,7 @@ function observeCards() {
             cards = node.querySelectorAll('.seventv-user-card-header');
           }
         }
-        
+
         for (const card of cards) {
           if (isUserCard(card)) {
             handleCardAppearance(card);
@@ -409,7 +430,7 @@ async function init() {
   } else if (cardTypePreference === '7tv') {
     existingCards = document.querySelectorAll('.seventv-user-card-header');
   }
-  
+
   for (const card of existingCards) {
     if (isUserCard(card) && !processedCards.has(card)) {
       handleCardAppearance(card);

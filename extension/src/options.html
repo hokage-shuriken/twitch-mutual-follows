@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Twitch Mutual Follows - Настройки</title>
+  <title data-i18n="extensionName">Twitch Mutual Follows</title>
   <style>
     * {
       margin: 0;
@@ -199,65 +199,65 @@
 </head>
 <body>
   <div class="container">
-    <h1>Twitch Mutual Follows</h1>
-    <p class="subtitle">Настройки расширения</p>
+    <h1 data-i18n="extensionName">Twitch Mutual Follows</h1>
+    <p class="subtitle" data-i18n="settingsTitle">Extension Settings</p>
 
     <!-- My Login Section -->
     <div class="section">
-      <h2 class="section-title">Ваш логин Twitch</h2>
+      <h2 class="section-title" data-i18n="yourTwitchLogin">Your Twitch Login</h2>
       <div class="form-group">
-        <label for="myLogin">Логин</label>
+        <label for="myLogin" data-i18n="login">Login</label>
         <input
           type="text"
           id="myLogin"
-          placeholder="например: yourname"
+          data-i18n-placeholder="loginPlaceholder"
           autocomplete="off"
         >
-        <p class="help-text">
-          Введите ваш логин Twitch для отображения общих подписок.
-          Расширение попытается определить логин автоматически, но вы можете установить его вручную.
+        <p class="help-text" data-i18n="loginHelpText">
+          Enter your Twitch login to display mutual follows.
+          The extension will try to detect your login automatically, but you can set it manually.
         </p>
       </div>
-      <button id="saveLogin" class="button button-primary">Сохранить</button>
+      <button id="saveLogin" class="button button-primary" data-i18n="save">Save</button>
       <div id="saveStatus"></div>
     </div>
 
     <!-- Card Type Selection -->
     <div class="section">
-      <h2 class="section-title">Тип карточки пользователя</h2>
+      <h2 class="section-title" data-i18n="cardTypeSection">User Card Type</h2>
       <div class="form-group">
-        <label for="cardType">Показывать общие подписки в карточке</label>
+        <label for="cardType" data-i18n="cardTypeLabel">Show mutual follows in card</label>
         <select id="cardType" style="width: 100%; padding: 10px 12px; background-color: #0e0e10; border: 2px solid #2e2e33; border-radius: 6px; color: #efeff1; font-size: 14px;">
-          <option value="native">Нативная карточка Twitch</option>
-          <option value="7tv">7TV карточка(bugged)</option>
+          <option value="native" data-i18n="cardTypeNative">Native Twitch Card</option>
+          <option value="7tv" data-i18n="cardType7TV">7TV Card</option>
         </select>
-        <p class="help-text">
-          Выберите, в какой карточке отображать общие подписки. Нативная карточка используется по умолчанию.
+        <p class="help-text" data-i18n="cardTypeHelpText">
+          Choose which card to display mutual follows in. Native card is used by default.
         </p>
       </div>
-      <button id="saveCardType" class="button button-primary">Сохранить</button>
+      <button id="saveCardType" class="button button-primary" data-i18n="save">Save</button>
       <div id="cardTypeStatus"></div>
     </div>
 
     <!-- Cache Section -->
     <div class="section">
-      <h2 class="section-title">Управление кешем</h2>
-      <p class="help-text" style="margin-bottom: 16px;">
-        Расширение кеширует списки подписок на 12 часов для ускорения работы.
-        Вы можете очистить кеш для обновления данных.
+      <h2 class="section-title" data-i18n="cacheManagement">Cache Management</h2>
+      <p class="help-text" style="margin-bottom: 16px;" data-i18n="cacheHelpText">
+        The extension caches follow lists for 12 hours to speed up performance.
+        You can clear the cache to refresh data.
       </p>
-      <button id="clearCache" class="button button-danger">Очистить весь кеш</button>
+      <button id="clearCache" class="button button-danger" data-i18n="clearAllCache">Clear All Cache</button>
       <div id="cacheStatus"></div>
     </div>
 
     <!-- Info Box -->
     <div class="info-box">
-      <div class="info-box-title">Как использовать?</div>
-      <div class="info-box-text">
-        1. Откройте любой чат на Twitch<br>
-        2. Кликните на ник пользователя в чате<br>
-        3. В появившейся карточке увидите блок "Общие фолловы"<br>
-        4. Кликните на аватарки, чтобы увидеть полный список
+      <div class="info-box-title" data-i18n="howToUseTitle">How to Use?</div>
+      <div class="info-box-text" data-i18n-html="howToUseText">
+        1. Open any chat on Twitch<br>
+        2. Click on a username in chat<br>
+        3. You'll see a "Mutual Follows" section in the card<br>
+        4. Click on the avatars to see the full list
       </div>
     </div>
   </div>
